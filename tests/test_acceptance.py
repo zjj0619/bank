@@ -51,6 +51,14 @@ def test_catalog_matches_test_functions():
     catalog = [case["function"] for case in CASES]
     assert sorted(names) == sorted(catalog)
     assert len(catalog) == len(set(catalog)) >= 20
+    functional = [case for case in CASES if case["category"] == "Functional"]
+    assert len(functional) >= 40
+    for case in functional:
+        assert case["id"].startswith("FC-")
+        assert case["preconditions"] and case["steps"] and case["expected"] and case["title"]
+        path_text, function_name = case["trace"].split("::")
+        assert (ROOT / path_text).is_file(), path_text
+        assert function_name.isidentifier()
 
 
 def test_reset_command_recreates_isolated_database(tmp_path, monkeypatch):

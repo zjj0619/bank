@@ -1,0 +1,53 @@
+name: tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Locate Chrome
+        run: |
+          bin="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$bin"
+          echo "CHROME_BIN=$bin" >> "$GITHUB_ENV"
+          "$bin" --version
+
+      - name: Run pytest
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: bash scripts/run_tests.sh
+
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linden-ledger-test-evidence
+          path: |
+            reports/junit.xml
+            reports/coverage.xml
+            reports/pytest-output.txt
+            reports/pytest-exit-code.txt
+            reports/pytest-report.html
+            reports/allure-results/
+            docs/integration_report.md
+            docs/test_cases.csv
+            docs/test_cases.md

@@ -108,6 +108,10 @@ Browser cases do not hard-code a machine-specific Chrome path.
 - `CHROMEDRIVER` or `BANK_CHROMEDRIVER` can select the driver. Otherwise that is discovered too.
 - If no browser can be started, those cases are skipped and the reason is kept in the report. A skip is not a pass.
 
+GitHub Actions runs this suite on pull requests and on `main`. The workflow is `.github/workflows/tests.yml`. It installs Chrome, runs the browser cases headless, and uploads JUnit, coverage, the HTML report, and Allure results as artifacts. `reports/pytest-report.html` is the HTML report from pytest-html. Allure's raw result files are not committed.
+
+SQLMap evidence, from a run bound only to `127.0.0.1`, is in `docs/security/sqlmap_summary.md`.
+
 ## API example
 
 Fetch a CSRF token, then sign in. Replace the passphrase with your own.

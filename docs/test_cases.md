@@ -1,6 +1,6 @@
 # Integration case table
 
-59 cases were authored. Actual status comes from `reports/junit.xml` at 2026-11-11T08:30:58Z.
+119 cases were authored. Actual status comes from `reports/junit.xml` at 2026-11-11T12:51:43Z.
 Skipped is not passed. A case missing from this JUnit file is marked Not run.
 
 | Case ID | Category | Test function | Title | Actual status |
@@ -64,5 +64,124 @@ Skipped is not passed. A case missing from this JUnit file is marked Not run.
 | IT-57 | Security | `test_change_password_updates_hash_and_ends_other_sessions` | Changing the passphrase updates the hash and ends other sessions | Passed |
 | IT-58 | Security | `test_shared_seed_passphrase_is_refused` | A shared seed passphrase is refused | Passed |
 | IT-59 | Security | `test_weak_seed_passphrase_is_refused` | A weak seed passphrase is refused | Passed |
+| FC-01 | Functional | `test_note_of_100_characters_is_stored` | A 100-character note is stored on a deposit | Passed |
+| FC-02 | Functional | `test_note_of_101_characters_is_rejected` | A 101-character note is rejected | Passed |
+| FC-03 | Functional | `test_note_is_trimmed_to_100_characters` | Surrounding spaces do not count toward the note limit | Passed |
+| FC-04 | Functional | `test_note_drops_null_bytes` | A null byte is removed from a note | Passed |
+| FC-05 | Functional | `test_missing_note_is_stored_empty` | A null note is stored as an empty string | Passed |
+| FC-06 | Functional | `test_non_text_note_is_rejected` | A numeric note is rejected | Passed |
+| FC-07 | Functional | `test_idempotency_key_of_8_characters_is_accepted` | An 8-character idempotency key is accepted | Passed |
+| FC-08 | Functional | `test_idempotency_key_of_80_characters_is_accepted` | An 80-character idempotency key is accepted | Passed |
+| FC-09 | Functional | `test_idempotency_key_of_7_characters_is_rejected` | A 7-character idempotency key is rejected | Passed |
+| FC-10 | Functional | `test_idempotency_key_of_81_characters_is_rejected` | An 81-character idempotency key is rejected | Passed |
+| FC-11 | Functional | `test_idempotency_key_with_a_space_is_rejected` | An idempotency key with a space is rejected | Passed |
+| FC-12 | Functional | `test_missing_idempotency_key_is_rejected` | A deposit without an idempotency key is rejected | Passed |
+| FC-13 | Functional | `test_idempotency_key_in_json_body_posts_a_withdrawal` | A withdrawal accepts the idempotency key in JSON | Passed |
+| FC-14 | Functional | `test_replayed_withdrawal_does_not_debit_twice` | Repeating a withdrawal with the same key does not debit twice | Passed |
+| FC-15 | Functional | `test_failed_transfer_does_not_consume_idempotency_key` | A failed transfer leaves the idempotency key unused | Passed |
+| FC-16 | Functional | `test_transfer_rejected_when_receiver_balance_would_exceed_cap` | A transfer that would push the receiver over the cap is rejected | Passed |
+| FC-17 | Functional | `test_transfer_that_lands_receiver_on_cap_succeeds` | A transfer may land the receiver exactly on the cap | Passed |
+| FC-18 | Functional | `test_concurrent_transfers_of_full_balance_do_not_overspend` | Two full-balance transfers cannot both post | Passed |
+| FC-19 | Functional | `test_concurrent_transfers_from_two_senders_both_post` | Concurrent transfers from two senders both post | Passed |
+| FC-20 | Functional | `test_concurrent_same_key_deposits_post_once` | Two deposits with one key post once | Passed |
+| FC-21 | Functional | `test_integrity_error_without_stored_key_returns_conflict` | A unique-key collision with no stored result returns conflict | Passed |
+| FC-22 | Functional | `test_integrity_error_with_matching_key_returns_replay` | A unique-key collision returns the stored result when the fingerprint matches | Passed |
+| FC-23 | Functional | `test_integrity_error_with_different_fingerprint_conflicts` | A unique-key collision with a different fingerprint conflicts | Passed |
+| FC-24 | Functional | `test_history_limit_one_returns_newest_entry` | Activity limit 1 returns the newest entry | Passed |
+| FC-25 | Functional | `test_history_offset_skips_newest_entry` | Activity offset 1 skips the newest entry | Passed |
+| FC-26 | Functional | `test_history_limit_above_100_is_rejected` | Activity limit above 100 is rejected | Passed |
+| FC-27 | Functional | `test_history_offset_above_100000_is_rejected` | Activity offset above 100000 is rejected | Passed |
+| FC-28 | Functional | `test_profile_returns_signed_in_user_only` | The profile endpoint ignores another user's query | Passed |
+| FC-29 | Functional | `test_opening_activity_is_labeled_opening` | The opening entry is labeled Opening | Passed |
+| FC-30 | Functional | `test_transfer_activity_labels_direction` | A transfer is Out for the sender and In for the receiver | Passed |
+| FC-31 | Functional | `test_one_decimal_amount_posts_whole_fen` | One decimal place posts the right number of fen | Passed |
+| FC-32 | Functional | `test_leading_zero_amount_is_rejected` | A leading zero in the yuan amount is rejected | Passed |
+| FC-33 | Functional | `test_amount_with_surrounding_spaces_is_accepted` | Spaces around an amount are ignored | Passed |
+| FC-34 | Functional | `test_account_number_with_surrounding_spaces_transfers` | Spaces around an account number still find the receiver | Passed |
+| FC-35 | Functional | `test_non_string_recipient_is_rejected` | A numeric recipient is rejected | Passed |
+| FC-36 | Functional | `test_signed_out_deposit_page_redirects_to_sign_in` | The deposit page requires a session | Passed |
+| FC-37 | Functional | `test_signed_out_activity_page_redirects_to_sign_in` | The activity page requires a session | Passed |
+| FC-38 | Functional | `test_signed_in_user_is_sent_from_sign_in_to_overview` | A signed-in user opening sign-in is sent to the overview | Passed |
+| FC-39 | Functional | `test_web_withdrawal_over_balance_stays_on_the_form` | A web withdrawal over the balance stays on the form | Passed |
+| FC-40 | Functional | `test_web_transfer_to_unknown_account_stays_on_the_form` | A web transfer to an unknown account stays on the form | Passed |
+| FC-41 | Functional | `test_web_passphrase_mismatch_does_not_change_the_hash` | Mismatched passphrase confirmation does not change the hash | Passed |
+| FC-42 | Functional | `test_sign_out_without_csrf_keeps_the_session` | Sign-out without CSRF keeps the session | Passed |
+| FC-43 | Functional | `test_dashboard_shows_posted_balance_line_after_a_second_entry` | The posted-balance line appears after a second entry | Passed |
+| FC-44 | Functional | `test_wrong_csrf_token_rejects_a_deposit` | A wrong CSRF token rejects a deposit | Passed |
+| FC-45 | Functional | `test_username_longer_than_64_characters_does_not_sign_in` | A username longer than 64 characters does not sign in | Passed |
+| FC-46 | Functional | `test_non_string_password_does_not_sign_in` | A non-text passphrase does not sign in | Passed |
+| FC-47 | Functional | `test_wrong_current_passphrase_keeps_the_hash` | The wrong current passphrase does not change the hash | Passed |
+| FC-48 | Functional | `test_security_headers_are_present_on_a_page` | Pages send the simulation security headers | Passed |
+| FC-49 | Functional | `test_transfer_chain_conserves_the_three_balances` | A three-step transfer chain conserves the balances | Passed |
+| FC-50 | Functional | `test_unicode_note_respects_the_100_character_limit` | The note limit counts characters | Passed |
+| FC-51 | Functional | `test_stale_balance_guard_rejects_the_update` | A stale expected balance does not update the account | Passed |
+| FC-52 | Functional | `test_balance_guard_rejects_an_out_of_range_result` | The balance guard rejects a result outside the allowed range | Passed |
+| IT-60 | Interface | `test_selenium_failed_login_stays_on_login_page` | A wrong passphrase stays on the sign-in page | Passed |
+| SC-01 | Security | `test_local_env_file_fills_only_missing_names` | A local env file fills only names that are not already set | Passed |
+| SC-02 | Security | `test_secret_key_resolution_uses_override_env_file_or_generates` | The session key comes from an override, the environment, a file, or a new file | Passed |
+| SC-03 | Security | `test_private_file_write_ignores_chmod_errors` | A private-file write still returns the key when chmod fails | Passed |
+| SC-04 | Security | `test_seed_passwords_come_from_env_or_file_and_testing_refuses` | Seed passphrases come from the environment or a file, and tests refuse to invent one | Passed |
+| SC-05 | Security | `test_configured_seed_map_must_name_every_account` | A configured seed map must name every demo account | Passed |
+| DV-01 | Delivery | `test_sqlmap_evidence_targets_localhost_only` | SQLMap evidence targets only the local coursework app | Passed |
+| DV-02 | Delivery | `test_ci_workflow_runs_pytest_and_uploads_reports` | GitHub Actions runs pytest and uploads the reports | Passed |
 
-Preconditions, steps, inputs, expected results, and actual summaries are in the CSV beside this file.
+Preconditions, steps, inputs, expected results, traces, and actual summaries are in the CSV beside this file.
+
+## Functional inventory
+
+52 functional cases were authored as their own tests. Trace is file::function.
+
+| Case ID | Test function | Trace | Title | Actual status |
+| --- | --- | --- | --- | --- |
+| FC-01 | `test_note_of_100_characters_is_stored` | `app/services.py::clean_note` | A 100-character note is stored on a deposit | Passed |
+| FC-02 | `test_note_of_101_characters_is_rejected` | `app/services.py::clean_note` | A 101-character note is rejected | Passed |
+| FC-03 | `test_note_is_trimmed_to_100_characters` | `app/services.py::clean_note` | Surrounding spaces do not count toward the note limit | Passed |
+| FC-04 | `test_note_drops_null_bytes` | `app/services.py::clean_note` | A null byte is removed from a note | Passed |
+| FC-05 | `test_missing_note_is_stored_empty` | `app/services.py::clean_note` | A null note is stored as an empty string | Passed |
+| FC-06 | `test_non_text_note_is_rejected` | `app/services.py::clean_note` | A numeric note is rejected | Passed |
+| FC-07 | `test_idempotency_key_of_8_characters_is_accepted` | `app/services.py::clean_idempotency_key` | An 8-character idempotency key is accepted | Passed |
+| FC-08 | `test_idempotency_key_of_80_characters_is_accepted` | `app/services.py::clean_idempotency_key` | An 80-character idempotency key is accepted | Passed |
+| FC-09 | `test_idempotency_key_of_7_characters_is_rejected` | `app/services.py::clean_idempotency_key` | A 7-character idempotency key is rejected | Passed |
+| FC-10 | `test_idempotency_key_of_81_characters_is_rejected` | `app/services.py::clean_idempotency_key` | An 81-character idempotency key is rejected | Passed |
+| FC-11 | `test_idempotency_key_with_a_space_is_rejected` | `app/services.py::clean_idempotency_key` | An idempotency key with a space is rejected | Passed |
+| FC-12 | `test_missing_idempotency_key_is_rejected` | `app/webutil.py::read_idempotency_key` | A deposit without an idempotency key is rejected | Passed |
+| FC-13 | `test_idempotency_key_in_json_body_posts_a_withdrawal` | `app/services.py::withdraw` | A withdrawal accepts the idempotency key in JSON | Passed |
+| FC-14 | `test_replayed_withdrawal_does_not_debit_twice` | `app/services.py::_apply` | Repeating a withdrawal with the same key does not debit twice | Passed |
+| FC-15 | `test_failed_transfer_does_not_consume_idempotency_key` | `app/services.py::transfer` | A failed transfer leaves the idempotency key unused | Passed |
+| FC-16 | `test_transfer_rejected_when_receiver_balance_would_exceed_cap` | `app/services.py::_plan_transfer` | A transfer that would push the receiver over the cap is rejected | Passed |
+| FC-17 | `test_transfer_that_lands_receiver_on_cap_succeeds` | `app/services.py::_plan_transfer` | A transfer may land the receiver exactly on the cap | Passed |
+| FC-18 | `test_concurrent_transfers_of_full_balance_do_not_overspend` | `app/services.py::transfer` | Two full-balance transfers cannot both post | Passed |
+| FC-19 | `test_concurrent_transfers_from_two_senders_both_post` | `app/services.py::transfer` | Concurrent transfers from two senders both post | Passed |
+| FC-20 | `test_concurrent_same_key_deposits_post_once` | `app/services.py::deposit` | Two deposits with one key post once | Passed |
+| FC-21 | `test_integrity_error_without_stored_key_returns_conflict` | `app/services.py::_apply` | A unique-key collision with no stored result returns conflict | Passed |
+| FC-22 | `test_integrity_error_with_matching_key_returns_replay` | `app/services.py::_apply` | A unique-key collision returns the stored result when the fingerprint matches | Passed |
+| FC-23 | `test_integrity_error_with_different_fingerprint_conflicts` | `app/services.py::_apply` | A unique-key collision with a different fingerprint conflicts | Passed |
+| FC-24 | `test_history_limit_one_returns_newest_entry` | `app/services.py::list_history` | Activity limit 1 returns the newest entry | Passed |
+| FC-25 | `test_history_offset_skips_newest_entry` | `app/services.py::list_history` | Activity offset 1 skips the newest entry | Passed |
+| FC-26 | `test_history_limit_above_100_is_rejected` | `app/routes/api.py::_paging` | Activity limit above 100 is rejected | Passed |
+| FC-27 | `test_history_offset_above_100000_is_rejected` | `app/routes/api.py::_paging` | Activity offset above 100000 is rejected | Passed |
+| FC-28 | `test_profile_returns_signed_in_user_only` | `app/routes/api.py::me` | The profile endpoint ignores another user's query | Passed |
+| FC-29 | `test_opening_activity_is_labeled_opening` | `app/services.py::_history_item` | The opening entry is labeled Opening | Passed |
+| FC-30 | `test_transfer_activity_labels_direction` | `app/services.py::_history_item` | A transfer is Out for the sender and In for the receiver | Passed |
+| FC-31 | `test_one_decimal_amount_posts_whole_fen` | `app/money.py::parse_amount_to_fen` | One decimal place posts the right number of fen | Passed |
+| FC-32 | `test_leading_zero_amount_is_rejected` | `app/money.py::parse_amount_to_fen` | A leading zero in the yuan amount is rejected | Passed |
+| FC-33 | `test_amount_with_surrounding_spaces_is_accepted` | `app/money.py::parse_amount_to_fen` | Spaces around an amount are ignored | Passed |
+| FC-34 | `test_account_number_with_surrounding_spaces_transfers` | `app/services.py::normalize_account_no` | Spaces around an account number still find the receiver | Passed |
+| FC-35 | `test_non_string_recipient_is_rejected` | `app/services.py::normalize_account_no` | A numeric recipient is rejected | Passed |
+| FC-36 | `test_signed_out_deposit_page_redirects_to_sign_in` | `app/routes/web.py::deposit_page` | The deposit page requires a session | Passed |
+| FC-37 | `test_signed_out_activity_page_redirects_to_sign_in` | `app/routes/web.py::history_page` | The activity page requires a session | Passed |
+| FC-38 | `test_signed_in_user_is_sent_from_sign_in_to_overview` | `app/routes/web.py::login_form` | A signed-in user opening sign-in is sent to the overview | Passed |
+| FC-39 | `test_web_withdrawal_over_balance_stays_on_the_form` | `app/routes/web.py::withdraw_page` | A web withdrawal over the balance stays on the form | Passed |
+| FC-40 | `test_web_transfer_to_unknown_account_stays_on_the_form` | `app/routes/web.py::transfer_page` | A web transfer to an unknown account stays on the form | Passed |
+| FC-41 | `test_web_passphrase_mismatch_does_not_change_the_hash` | `app/routes/web.py::password_page` | Mismatched passphrase confirmation does not change the hash | Passed |
+| FC-42 | `test_sign_out_without_csrf_keeps_the_session` | `app/routes/web.py::logout` | Sign-out without CSRF keeps the session | Passed |
+| FC-43 | `test_dashboard_shows_posted_balance_line_after_a_second_entry` | `app/routes/web.py::sparkline_for` | The posted-balance line appears after a second entry | Passed |
+| FC-44 | `test_wrong_csrf_token_rejects_a_deposit` | `app/webutil.py::require_csrf` | A wrong CSRF token rejects a deposit | Passed |
+| FC-45 | `test_username_longer_than_64_characters_does_not_sign_in` | `app/services.py::authenticate` | A username longer than 64 characters does not sign in | Passed |
+| FC-46 | `test_non_string_password_does_not_sign_in` | `app/services.py::authenticate` | A non-text passphrase does not sign in | Passed |
+| FC-47 | `test_wrong_current_passphrase_keeps_the_hash` | `app/services.py::change_password` | The wrong current passphrase does not change the hash | Passed |
+| FC-48 | `test_security_headers_are_present_on_a_page` | `app/__init__.py::_register_handlers` | Pages send the simulation security headers | Passed |
+| FC-49 | `test_transfer_chain_conserves_the_three_balances` | `app/services.py::transfer` | A three-step transfer chain conserves the balances | Passed |
+| FC-50 | `test_unicode_note_respects_the_100_character_limit` | `app/services.py::clean_note` | The note limit counts characters | Passed |
+| FC-51 | `test_stale_balance_guard_rejects_the_update` | `app/services.py::_update_balance` | A stale expected balance does not update the account | Passed |
+| FC-52 | `test_balance_guard_rejects_an_out_of_range_result` | `app/services.py::_update_balance` | The balance guard rejects a result outside the allowed range | Passed |

@@ -5,3 +5,7 @@ Integration,40%,Case catalog,Done,tests/case_catalog.py,Authored count is in the
 Integration,40%,Executed results,See the report,docs/integration_report.md,Do not copy pass counts into this sheet
 Management,30%,README architecture schema and API,Done,README.md;docs/,Editable
 Management,30%,Plan standup template and risks,Done,docs/management/,No invented meeting
+Integration,40%,Separate functional inventory,Done,tests/test_functional.py,Authored as its own cases
+Integration,40%,Local SQLMap evidence,Done,docs/security/sqlmap_summary.md,Localhost only
+Integration,40%,Page objects HTML report and CI,Done,.github/workflows/tests.yml,Headless browser on pull requests and main
+Management,30%,Written status updates,Done,docs/management/standup_log.md,Not minutes of a verbal standup
