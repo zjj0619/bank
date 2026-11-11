@@ -17,6 +17,10 @@ pytest==9.2.0
 pytest-cov==7.1.0
 coverage==7.17.2
 selenium==4.52.0
+pytest-html==4.2.0
+pytest-metadata==3.1.1
+allure-pytest==2.15.3
+allure-python-commons==2.15.3
 
 # 传递依赖锁定，便于在 Linux / macOS / Windows 上复现同一版本
 attrs==26.1.0

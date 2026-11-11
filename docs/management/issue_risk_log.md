@@ -13,3 +13,5 @@ Only items that actually showed up, plus limits that are still true. There are n
 | R-04 | Limit | The security cases are not a full audit | They do not describe a real bank | The report says so | Accepted |
 
 The spreadsheet form is `issue_risk_log.csv`.
+
+On 2026-11-11, SQLMap 1.10.3 was run against a temporary server bound only to 127.0.0.1. UNION and boolean-blind checks were separate runs. SQLMap reported that every tested parameter does not appear to be injectable. No new defect was opened, and no CVSS score was assigned. The sanitized output is in `docs/security/sqlmap_summary.md`.

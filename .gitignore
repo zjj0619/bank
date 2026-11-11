@@ -9,6 +9,7 @@ htmlcov/
 .coverage
 .coverage.*
 /coverage.xml
+reports/allure-results/
 
 # 本地密钥与演示口令。绝不提交。
 .demo_credentials
@@ -31,6 +32,7 @@ data/*.db
 .idea/
 .vscode/
 *.log
+!docs/security/sqlmap/*.log
 
 # 打包产物
 dist/

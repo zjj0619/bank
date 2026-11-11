@@ -1,0 +1,124 @@
+{
+  "tool": "sqlmap",
+  "tool_version": "1.10.3#pip",
+  "host": "127.0.0.1",
+  "bind": "127.0.0.1",
+  "techniques": [
+    "U",
+    "B"
+  ],
+  "injectable": false,
+  "cvss": null,
+  "targets": [
+    "http://127.0.0.1:40037/login",
+    "http://127.0.0.1:40037/login",
+    "http://127.0.0.1:40037/login",
+    "http://127.0.0.1:40037/login",
+    "http://127.0.0.1:40037/api/v1/account?account_no=SIM-1001&user_id=1",
+    "http://127.0.0.1:40037/api/v1/account?account_no=SIM-1001&user_id=1",
+    "http://127.0.0.1:40037/api/v1/transactions?limit=20&offset=0",
+    "http://127.0.0.1:40037/api/v1/transactions?limit=20&offset=0"
+  ],
+  "runs": [
+    {
+      "name": "login-password-union",
+      "technique": "U",
+      "url": "http://127.0.0.1:40037/login",
+      "parameters": [
+        "password"
+      ],
+      "exit_code": 0,
+      "injectable": false,
+      "conclusion": "[12:48:51] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Rerun without providing the option '--technique'. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'",
+      "log": "docs/security/sqlmap/login-password-union.log"
+    },
+    {
+      "name": "login-password-blind",
+      "technique": "B",
+      "url": "http://127.0.0.1:40037/login",
+      "parameters": [
+        "password"
+      ],
+      "exit_code": 0,
+      "injectable": false,
+      "conclusion": "[12:48:52] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Rerun without providing the option '--technique'. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'",
+      "log": "docs/security/sqlmap/login-password-blind.log"
+    },
+    {
+      "name": "login-username-union",
+      "technique": "U",
+      "url": "http://127.0.0.1:40037/login",
+      "parameters": [
+        "username"
+      ],
+      "exit_code": 0,
+      "injectable": false,
+      "conclusion": "[12:48:52] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Rerun without providing the option '--technique'. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'",
+      "log": "docs/security/sqlmap/login-username-union.log"
+    },
+    {
+      "name": "login-username-blind",
+      "technique": "B",
+      "url": "http://127.0.0.1:40037/login",
+      "parameters": [
+        "username"
+      ],
+      "exit_code": 0,
+      "injectable": false,
+      "conclusion": "[12:48:53] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Rerun without providing the option '--technique'. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'",
+      "log": "docs/security/sqlmap/login-username-blind.log"
+    },
+    {
+      "name": "account-union",
+      "technique": "U",
+      "url": "http://127.0.0.1:40037/api/v1/account?account_no=SIM-1001&user_id=1",
+      "parameters": [
+        "account_no",
+        "user_id"
+      ],
+      "exit_code": 0,
+      "injectable": false,
+      "conclusion": "[12:48:53] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Rerun without providing the option '--technique'. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'",
+      "log": "docs/security/sqlmap/account-union.log"
+    },
+    {
+      "name": "account-blind",
+      "technique": "B",
+      "url": "http://127.0.0.1:40037/api/v1/account?account_no=SIM-1001&user_id=1",
+      "parameters": [
+        "account_no",
+        "user_id"
+      ],
+      "exit_code": 0,
+      "injectable": false,
+      "conclusion": "[12:48:54] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Rerun without providing the option '--technique'. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'",
+      "log": "docs/security/sqlmap/account-blind.log"
+    },
+    {
+      "name": "transactions-union",
+      "technique": "U",
+      "url": "http://127.0.0.1:40037/api/v1/transactions?limit=20&offset=0",
+      "parameters": [
+        "limit",
+        "offset"
+      ],
+      "exit_code": 0,
+      "injectable": false,
+      "conclusion": "[12:48:55] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Rerun without providing the option '--technique'. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'",
+      "log": "docs/security/sqlmap/transactions-union.log"
+    },
+    {
+      "name": "transactions-blind",
+      "technique": "B",
+      "url": "http://127.0.0.1:40037/api/v1/transactions?limit=20&offset=0",
+      "parameters": [
+        "limit",
+        "offset"
+      ],
+      "exit_code": 0,
+      "injectable": false,
+      "conclusion": "[12:48:56] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Rerun without providing the option '--technique'. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'",
+      "log": "docs/security/sqlmap/transactions-blind.log"
+    }
+  ]
+}

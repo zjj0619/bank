@@ -2,3 +2,7 @@ Milestone,Weight,Deliverable,Done when,Status,Note
 M1 System,30%,Flask app and SQLite ledger,Local start and a simulated movement,Done,Editable checklist. Not a timesheet.
 M2 Integration,40%,Catalog evidence and English report,Authored count is separate from passed failed and skipped,Done,A skip is not a pass.
 M3 Management,30%,README architecture schema and risk notes,Docs are editable and the passphrase stays out of the report,Done,No meeting was scheduled.
+M2 Integration,40%,Separate functional cases,Each case has its own test and a trace,Done,Includes the receiver cap race recovery concurrent transfers and the note limit
+M2 Integration,40%,SQLMap on localhost,Sanitized UNION and blind logs,Done,No score unless a real finding is recorded
+M2 Integration,40%,Page objects HTML report and CI,Headless pytest on pull requests and main,Done,Artifacts are the reports
+M3 Management,30%,Written status updates,The log is not minutes of a verbal standup,Done,Reconstructed from the repository

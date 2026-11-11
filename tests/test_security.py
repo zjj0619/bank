@@ -194,6 +194,9 @@ def test_sql_injection_login_does_not_authenticate(client, app):
         "demo_zhang' OR '1'='1",
         '" OR "1"="1',
         "demo_zhang'; DROP TABLE users;--",
+        "' UNION SELECT 1,2,3,4,5,6,7--",
+        "demo_zhang' AND '1'='1",
+        "demo_zhang' AND '1'='2",
     ]
     for username in payloads:
         token = client.get("/api/v1/csrf").get_json()["csrf_token"]
@@ -216,7 +219,7 @@ def test_sql_injection_login_does_not_authenticate(client, app):
 
 def test_sql_injection_in_transaction_form_is_stored_not_executed(client, app):
     headers = login(client)
-    note = "'); DROP TABLE accounts;--"
+    note = "'); DROP TABLE accounts;-- ' UNION SELECT 1,2,3--"
     stored = post_json(client, "/api/v1/deposits", headers, {"amount": "1.00", "note": note})
     assert stored.status_code == 200, stored.get_data(as_text=True)
     assert any(item["note"] == note for item in history(client, headers))

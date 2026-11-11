@@ -66,7 +66,7 @@ def load_results() -> dict[str, dict]:
     return found
 
 
-def coverage_rows() -> tuple[str, list[tuple[str, str, str, str]]]:
+def coverage_rows() -> tuple[str, list[tuple[str, str, str, str, str]]]:
     if not COVERAGE.exists():
         return "coverage.xml was not produced for this run", []
     root = ET.parse(COVERAGE).getroot()
@@ -74,6 +74,14 @@ def coverage_rows() -> tuple[str, list[tuple[str, str, str, str]]]:
     valid = root.attrib.get("lines-valid", "0")
     covered = root.attrib.get("lines-covered", "0")
     summary = f"Line coverage {rate * 100:.1f}% ({covered}/{valid} lines)"
+    branch_rate = root.attrib.get("branch-rate")
+    branches_valid = root.attrib.get("branches-valid")
+    branches_covered = root.attrib.get("branches-covered")
+    if branch_rate is not None and branches_valid not in (None, ""):
+        summary += (
+            f". Branch coverage {float(branch_rate) * 100:.1f}% "
+            f"({branches_covered}/{branches_valid} branches)"
+        )
     rows = []
     for clazz in root.findall(".//class"):
         filename = clazz.attrib.get("filename", "").replace("\\", "/")
@@ -82,11 +90,35 @@ def coverage_rows() -> tuple[str, list[tuple[str, str, str, str]]]:
         if not filename.startswith("app/"):
             filename = "app/" + filename
         line_nodes = clazz.findall("./lines/line")
-        valid = str(len(line_nodes))
-        covered = str(sum(1 for line in line_nodes if int(line.attrib.get("hits", "0")) > 0))
+        valid_lines = str(len(line_nodes))
+        covered_lines = str(sum(1 for line in line_nodes if int(line.attrib.get("hits", "0")) > 0))
         line_rate = float(clazz.attrib.get("line-rate", "0"))
-        rows.append((filename, f"{line_rate * 100:.1f}%", valid, covered))
+        branch = clazz.attrib.get("branch-rate")
+        branch_text = f"{float(branch) * 100:.1f}%" if branch not in (None, "") else ""
+        rows.append((filename, f"{line_rate * 100:.1f}%", valid_lines, covered_lines, branch_text))
     return summary, rows
+
+
+def sqlmap_lines() -> list[str]:
+    path = ROOT / "reports" / "sqlmap_outcome.json"
+    if not path.exists():
+        return ["SQLMap outcome was not recorded for this run."]
+    outcome = json.loads(path.read_text(encoding="utf-8"))
+    lines = [
+        f"- Tool: {outcome.get('tool', 'sqlmap')} {outcome.get('tool_version', '')}".rstrip(),
+        f"- Bind and host: {outcome.get('bind', '')}",
+        f"- Techniques: {', '.join(outcome.get('techniques') or [])}",
+        f"- Injectable parameter reported: {outcome.get('injectable')}",
+    ]
+    if outcome.get("injectable"):
+        lines.append(f"- CVSS: {outcome.get('cvss')}")
+    else:
+        lines.append("- CVSS: not assigned, because no injectable parameter was reported.")
+    for run in outcome.get("runs") or []:
+        lines.append(
+            f"- {run.get('name')}: technique {run.get('technique')} on {run.get('url')} — {run.get('conclusion')}"
+        )
+    return lines
 
 
 def main() -> int:
@@ -102,6 +134,10 @@ def main() -> int:
     errors = counts.get("Error", 0)
     skipped = counts.get("Skipped", 0)
     collected = passed + failed + errors + skipped
+    functional_cases = [case for case in CASES if case.get("category") == "Functional"]
+    functional_passed = sum(
+        1 for case in functional_cases if results.get(case["function"], {}).get("status") == "Passed"
+    )
     exit_code = EXIT_CODE.read_text(encoding="utf-8").strip() if EXIT_CODE.exists() else "unknown"
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     notes = {"fixes": [], "limits": []}
@@ -112,7 +148,7 @@ def main() -> int:
     (ROOT / "reports").mkdir(exist_ok=True)
     with CSV_PATH.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.writer(handle)
-        writer.writerow(["Case ID", "Category", "Test function", "Title", "Preconditions", "Steps", "Inputs", "Expected", "Actual status", "Actual summary"])
+        writer.writerow(["Case ID", "Category", "Test function", "Title", "Preconditions", "Steps", "Inputs", "Expected", "Trace", "Actual status", "Actual summary"])
         for case in CASES:
             result = results.get(case["function"])
             if result is None:
@@ -131,6 +167,7 @@ def main() -> int:
                     case["steps"],
                     case["inputs"],
                     case["expected"],
+                    case.get("trace", ""),
                     status,
                     detail,
                 ]
@@ -149,7 +186,27 @@ def main() -> int:
         result = results.get(case["function"])
         status = "Not run" if result is None else result["status"]
         lines.append(f"| {case['id']} | {case['category']} | `{case['function']}` | {case['title']} | {status} |")
-    lines.extend(["", "Preconditions, steps, inputs, expected results, and actual summaries are in the CSV beside this file.", ""])
+    functional = [case for case in CASES if case.get("category") == "Functional"]
+    lines.extend(
+        [
+            "",
+            "Preconditions, steps, inputs, expected results, traces, and actual summaries are in the CSV beside this file.",
+            "",
+            "## Functional inventory",
+            "",
+            f"{len(functional)} functional cases were authored as their own tests. Trace is file::function.",
+            "",
+            "| Case ID | Test function | Trace | Title | Actual status |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+    )
+    for case in functional:
+        result = results.get(case["function"])
+        status = "Not run" if result is None else result["status"]
+        lines.append(
+            f"| {case['id']} | `{case['function']}` | `{case.get('trace', '')}` | {case['title']} | {status} |"
+        )
+    lines.append("")
     MD_PATH.write_text("\n".join(lines), encoding="utf-8")
 
     coverage_summary, coverage_files = coverage_rows()
@@ -171,6 +228,8 @@ def main() -> int:
         f"- Authored but missing from this run: {len(missing)}",
         f"- In JUnit but not in the catalog: {len(extra)}",
         f"- pytest exit code: {exit_code}",
+        f"- Member B functional cases authored: {len(functional_cases)}",
+        f"- Member B functional cases passed in this run: {functional_passed}",
         "",
         "## 2. Environment",
         "",
@@ -179,7 +238,7 @@ def main() -> int:
         f"- Python: {sys.version.split()[0]}",
         "- Application: Flask and SQLite. Tests: pytest, pytest-cov, Selenium",
         "- Database: each case uses its own temporary SQLite file",
-        "- Command: `python -m pytest --junitxml=reports/junit.xml --cov=app --cov-report=term-missing --cov-report=xml:reports/coverage.xml`",
+        "- Command: `bash scripts/run_tests.sh`",
         "",
         "## 3. Coverage",
         "",
@@ -187,9 +246,9 @@ def main() -> int:
         "",
     ]
     if coverage_files:
-        report.extend(["| File | Line coverage | Valid lines | Covered lines |", "| --- | --- | --- | --- |"])
-        for filename, rate, valid, covered in sorted(coverage_files):
-            report.append(f"| `{filename}` | {rate} | {valid} | {covered} |")
+        report.extend(["| File | Line coverage | Valid lines | Covered lines | Branch coverage |", "| --- | --- | --- | --- | --- |"])
+        for filename, rate, valid, covered, branch in sorted(coverage_files):
+            report.append(f"| `{filename}` | {rate} | {valid} | {covered} | {branch} |")
         report.append("")
     report.extend(["## 4. Skip reasons", ""])
     skip_rows = [
@@ -230,12 +289,19 @@ def main() -> int:
             "",
             "- `reports/junit.xml`",
             "- `reports/pytest-output.txt`",
+            "- `reports/pytest-exit-code.txt`",
             "- `reports/coverage.xml`",
+            "- `reports/pytest-report.html`",
             "- `docs/test_cases.csv`",
             "- `docs/test_cases.md`",
+            "- `docs/security/sqlmap_summary.md`",
             "- `docs/screenshots/` when the browser cases saved images",
             "",
-            "## 8. Remaining limits",
+            "## 8. SQLMap",
+            "",
+            *sqlmap_lines(),
+            "",
+            "## 9. Remaining limits",
             "",
             "- This is not a penetration test and not an assessment of a real bank. SQL injection, CSRF, session, and authorization checks cover only the cases named here.",
             "- SQLite immediate transactions prevent overdraft on one machine. They are not a production payment system.",

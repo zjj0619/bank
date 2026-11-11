@@ -6,10 +6,14 @@ import threading
 from pathlib import Path
 
 import pytest
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from werkzeug.serving import make_server
 
 from app.paths import ROOT
 from tests.helpers import FIXTURE_PASSWORD, OPENING, make_app, opened
+from tests.pages import HistoryPage, LoginPage, MoneyPage, OverviewPage
 
 pytestmark = [pytest.mark.integration, pytest.mark.selenium]
 
@@ -24,7 +28,7 @@ class LiveServer:
         self.base = f"http://127.0.0.1:{self._server.server_port}"
         self._thread = threading.Thread(target=self._server.serve_forever, daemon=True)
 
-    def start(self) -> "LiveServer":
+    def start(self) -> LiveServer:
         self._thread.start()
         return self
 
@@ -108,90 +112,52 @@ def _no_page_overflow(browser) -> None:
     assert metrics["scroll"] <= metrics["client"] + 1, metrics
 
 
-def _login(browser, base: str, username: str = "demo_zhang") -> None:
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.webdriver.support.ui import WebDriverWait
-
-    browser.get(base + "/login")
-    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.ID, "username")))
-    browser.find_element(By.ID, "username").send_keys(username)
-    browser.find_element(By.ID, "password").send_keys(FIXTURE_PASSWORD)
-    browser.find_element(By.ID, "login-submit").click()
-    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.ID, "balance")))
-
-
 def test_selenium_login_shows_balance(live, driver):
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.webdriver.support.ui import WebDriverWait
-
-    driver.get(live.base + "/login")
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "login-form")))
+    login = LoginPage(driver, live.base).open()
     driver.set_window_size(1440, 1000)
-    assert "Linden Ledger" in driver.page_source
-    assert "Not a bank" in driver.page_source
-    assert "demo_zhang" in driver.page_source
-    assert "Mingyuan Zhang" in driver.page_source
-    assert FIXTURE_PASSWORD not in driver.page_source
+    assert "Linden Ledger" in login.source()
+    assert "Not a bank" in login.source()
+    assert "demo_zhang" in login.source()
+    assert "Mingyuan Zhang" in login.source()
+    assert FIXTURE_PASSWORD not in login.source()
     _no_page_overflow(driver)
     _shot(driver, "ui-login.png")
-    _login(driver, live.base)
-    balance = driver.find_element(By.ID, "balance")
-    assert balance.get_attribute("data-balance-fen") == str(OPENING["demo_zhang"])
-    assert "10,000.00" in balance.text
-    assert "Not a bank" in driver.page_source
+    login.sign_in("demo_zhang", FIXTURE_PASSWORD)
+    overview = OverviewPage(driver, live.base).wait_until_loaded()
+    assert overview.balance_fen() == str(OPENING["demo_zhang"])
+    assert "10,000.00" in overview.balance_text()
+    assert "Not a bank" in overview.source()
     _no_page_overflow(driver)
     _shot(driver, "ui-dashboard.png")
     driver.set_window_size(390, 844)
-    driver.get(live.base + "/")
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "balance")))
+    overview.open_path("/")
+    overview.wait_until_loaded()
     _no_page_overflow(driver)
     _shot(driver, "ui-dashboard-mobile.png")
-    driver.get(live.base + "/deposit")
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "amount")))
+    MoneyPage(driver, live.base).open("deposit")
     _no_page_overflow(driver)
     _shot(driver, "ui-deposit-mobile.png")
 
 
 def test_selenium_transactions_and_history(live, driver):
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.webdriver.support.ui import WebDriverWait
-
-    wait = WebDriverWait(driver, 10)
     driver.set_window_size(1440, 1000)
-    _login(driver, live.base)
-    driver.get(live.base + "/transfer")
-    wait.until(EC.presence_of_element_located((By.ID, "to_account_no")))
+    LoginPage(driver, live.base).open().sign_in("demo_zhang", FIXTURE_PASSWORD)
+    overview = OverviewPage(driver, live.base).wait_until_loaded()
+    money = MoneyPage(driver, live.base).open("transfer")
     _no_page_overflow(driver)
     _shot(driver, "ui-transfer.png")
 
-    driver.get(live.base + "/deposit")
-    wait.until(EC.presence_of_element_located((By.ID, "amount")))
-    driver.find_element(By.ID, "amount").send_keys("10.00")
-    driver.find_element(By.ID, "note").send_keys("Browser deposit")
-    driver.find_element(By.CSS_SELECTOR, "main form button.primary").click()
-    wait.until(EC.text_to_be_present_in_element((By.ID, "balance"), "10,010.00"))
+    money.open("deposit").submit("10.00", "Browser deposit")
+    overview.wait_for_balance_text("10,010.00")
 
-    driver.get(live.base + "/withdraw")
-    wait.until(EC.presence_of_element_located((By.ID, "amount")))
-    driver.find_element(By.ID, "amount").send_keys("3.00")
-    driver.find_element(By.ID, "note").send_keys("Browser withdrawal")
-    driver.find_element(By.CSS_SELECTOR, "main form button.primary").click()
-    wait.until(EC.text_to_be_present_in_element((By.ID, "balance"), "10,007.00"))
+    money.open("withdrawal").submit("3.00", "Browser withdrawal")
+    overview.wait_for_balance_text("10,007.00")
 
-    driver.get(live.base + "/transfer")
-    wait.until(EC.presence_of_element_located((By.ID, "to_account_no")))
-    driver.find_element(By.ID, "to_account_no").send_keys("SIM-1002")
-    driver.find_element(By.ID, "amount").send_keys("7.00")
-    driver.find_element(By.ID, "note").send_keys("Browser transfer")
-    driver.find_element(By.CSS_SELECTOR, "main form button.primary").click()
-    wait.until(EC.text_to_be_present_in_element((By.ID, "balance"), "10,000.00"))
+    money.open("transfer").submit("7.00", "Browser transfer", "SIM-1002")
+    overview.wait_for_balance_text("10,000.00")
 
-    driver.get(live.base + "/history")
-    wait.until(EC.presence_of_element_located((By.ID, "history")))
-    page = driver.page_source
+    history = HistoryPage(driver, live.base).open()
+    page = history.source()
     assert "Browser deposit" in page
     assert "Browser withdrawal" in page
     assert "Browser transfer" in page
@@ -203,3 +169,22 @@ def test_selenium_transactions_and_history(live, driver):
             "SELECT balance_fen FROM accounts WHERE account_no = 'SIM-1002'"
         ).fetchone()["balance_fen"]
         assert receiver == OPENING["demo_li"] + 700
+
+
+def test_selenium_failed_login_stays_on_login_page(live, driver):
+    rejected = "wrong-password"
+    login = LoginPage(driver, live.base).open()
+    driver.set_window_size(1440, 1000)
+    login.sign_in("demo_zhang", rejected)
+    assert login.still_on_login()
+    assert login.error_text() == "The username or passphrase is not correct."
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "login-form")))
+    assert driver.find_elements(By.ID, "balance") == []
+    source = login.source()
+    assert "Sign in" in source
+    assert "Not a bank" in source
+    assert "does not exist" not in source.lower()
+    assert FIXTURE_PASSWORD not in source
+    assert rejected not in source
+    _no_page_overflow(driver)
+    _shot(driver, "ui-login-failed.png")

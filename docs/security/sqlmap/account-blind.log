@@ -1,0 +1,37 @@
+Target: http://127.0.0.1:40037/api/v1/account?account_no=SIM-1001&user_id=1
+Technique: B
+Parameters: account_no, user_id
+
+        ___
+       __H__
+ ___ ___[']_____ ___ ___  {1.10.3#pip}
+|_ -| . [.]     | .'| . |
+|___|_  [.]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 12:48:54 /2026-11-11/
+
+[12:48:54] [WARNING] using '/tmp/linden-sqlmap-ydjzkiey/account-blind' as the output directory
+[12:48:54] [WARNING] provided parameters 'account_no, user_id' are not inside the Cookie
+[12:48:54] [INFO] testing connection to the target URL
+[12:48:54] [INFO] checking if the target is protected by some kind of WAF/IPS
+you provided a HTTP Cookie header value, while target URL provides its own cookies within HTTP Set-Cookie header which intersect with yours. Do you want to merge them in further requests? [Y/n] Y
+[12:48:54] [INFO] testing if the target URL content is stable
+[12:48:54] [INFO] target URL content is stable
+[12:48:54] [WARNING] heuristic (basic) test shows that GET parameter 'account_no' might not be injectable
+[12:48:54] [INFO] testing for SQL injection on GET parameter 'account_no'
+[12:48:54] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause'
+[12:48:54] [INFO] testing 'Boolean-based blind - Parameter replace (original value)'
+[12:48:54] [WARNING] GET parameter 'account_no' does not seem to be injectable
+[12:48:54] [WARNING] heuristic (basic) test shows that GET parameter 'user_id' might not be injectable
+[12:48:54] [INFO] testing for SQL injection on GET parameter 'user_id'
+[12:48:54] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause'
+[12:48:54] [INFO] testing 'Boolean-based blind - Parameter replace (original value)'
+[12:48:54] [WARNING] GET parameter 'user_id' does not seem to be injectable
+[12:48:54] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Rerun without providing the option '--technique'. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'
+
+[*] ending @ 12:48:54 /2026-11-11/
+
+
