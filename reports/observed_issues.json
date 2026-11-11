@@ -1,0 +1,7 @@
+{
+  "fixes": [
+    "The first test run failed while seeding because immediate_transaction was used without an import. The import was added and the suite was run again.",
+    "Very long digit-only amounts were labeled invalid_amount. They now return amount_overflow.",
+    "The visible interface was still Chinese and visually plain. It was rebuilt in English as Linden Ledger with bundled type and photography. Account ids and opening amounts were not changed."
+  ]
+}

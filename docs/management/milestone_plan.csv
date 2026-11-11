@@ -1,0 +1,4 @@
+Milestone,Weight,Deliverable,Done when,Status,Note
+M1 System,30%,Flask app and SQLite ledger,Local start and a simulated movement,Done,Editable checklist. Not a timesheet.
+M2 Integration,40%,Catalog evidence and English report,Authored count is separate from passed failed and skipped,Done,A skip is not a pass.
+M3 Management,30%,README architecture schema and risk notes,Docs are editable and the passphrase stays out of the report,Done,No meeting was scheduled.

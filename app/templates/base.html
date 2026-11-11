@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}Linden Ledger{% endblock %}</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/mark.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  {% block body %}
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="{{ url_for('web.home') }}">
+        <img src="{{ url_for('static', filename='images/mark.svg') }}" alt="" width="42" height="42">
+        <span>
+          <strong>Linden Ledger</strong>
+          <span>Simulated house accounts</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Account">
+        {% if nav_user %}
+        <a href="{{ url_for('web.home') }}" {% if request.endpoint == 'web.home' %}aria-current="page"{% endif %}>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          Overview
+        </a>
+        <a href="{{ url_for('web.deposit_page') }}" {% if request.endpoint == 'web.deposit_page' %}aria-current="page"{% endif %}>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Deposit
+        </a>
+        <a href="{{ url_for('web.withdraw_page') }}" {% if request.endpoint == 'web.withdraw_page' %}aria-current="page"{% endif %}>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Withdraw
+        </a>
+        <a href="{{ url_for('web.transfer_page') }}" {% if request.endpoint == 'web.transfer_page' %}aria-current="page"{% endif %}>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13M13 4l5 4-5 4M20 16H7M11 12l-5 4 5 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Transfer
+        </a>
+        <a href="{{ url_for('web.history_page') }}" {% if request.endpoint == 'web.history_page' %}aria-current="page"{% endif %}>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v16H7zM9 8h6M9 12h6M9 16h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          Activity
+        </a>
+        <a href="{{ url_for('web.password_page') }}" {% if request.endpoint == 'web.password_page' %}aria-current="page"{% endif %}>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 11V8a4 4 0 0 1 8 0v3M7 11h10v8H7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          Passphrase
+        </a>
+        <form method="post" action="{{ url_for('web.logout') }}" data-once>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button class="linkish" type="submit">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6H6v12h3M10 12h9M15 8l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Sign out
+          </button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('web.login_form') }}" {% if request.endpoint == 'web.login_form' %}aria-current="page"{% endif %}>Sign in</a>
+        {% endif %}
+      </nav>
+      <div class="sidebar-foot">
+        {% if nav_user %}
+        <p class="who"><strong>{{ nav_user.display_name }}</strong>{{ nav_user.username }}</p>
+        {% endif %}
+        <p>Coursework simulation. Nothing here is a deposit at a real bank.</p>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="top">
+        <div>
+          <p class="sim-note" id="simulation-banner">Simulated ledger · Not a bank · No real funds</p>
+          <h1>{% block heading %}Overview{% endblock %}</h1>
+        </div>
+      </header>
+      <main id="main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-list">
+          {% for category, message in messages %}
+          <li class="flash flash-{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {% block main %}{% endblock %}
+        <p class="footer-note">Balances are whole fen. 1 CNY = 100 fen. This is a coursework simulation. It does not move real money and it is not a card network. The pictures are original artwork and are not part of the books.</p>
+      </main>
+    </div>
+  </div>
+  {% endblock %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

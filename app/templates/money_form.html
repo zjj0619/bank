@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% set titles = {"deposit": "Deposit", "withdrawal": "Withdraw", "transfer": "Transfer"} %}
+{% set verbs = {"deposit": "Record deposit", "withdrawal": "Record withdrawal", "transfer": "Record transfer"} %}
+{% set actions = {"deposit": url_for("web.deposit_page"), "withdrawal": url_for("web.withdraw_page"), "transfer": url_for("web.transfer_page")} %}
+{% set pictures = {
+  "deposit": ("images/deposit-still-960.jpg", "images/deposit-still-960.webp", "A yellow ceramic form and a cream envelope on limestone. Original artwork, not a deposit record."),
+  "withdrawal": ("images/withdraw-hall-960.jpg", "images/withdraw-hall-960.webp", "A limestone corridor with one arch of afternoon light. Original artwork, not a withdrawal record."),
+  "transfer": ("images/transfer-arcs-960.jpg", "images/transfer-arcs-960.webp", "Two brushed-metal arcs, ink blue and champagne, on ivory. Original artwork, not a transfer record.")
+} %}
+{% block title %}{{ titles[kind] }} · Linden Ledger{% endblock %}
+{% block heading %}{{ titles[kind] }}{% endblock %}
+{% block main %}
+<div class="split">
+  <form class="panel form-card stack" method="post" action="{{ actions[kind] }}" data-once>
+    <p class="hint">Current balance <strong id="form-balance" data-balance-fen="{{ account.balance_fen }}">{{ account.balance_display }}</strong> CNY. The smallest amount is 0.01, with at most two decimal places. Sending this form again does not post a second entry.</p>
+    {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="idempotency_key" value="{{ idempotency_key }}">
+    {% if kind == "transfer" %}
+    <label>Receiving simulated account
+      <input id="to_account_no" name="to_account_no" value="{{ form.to_account_no }}" placeholder="SIM-1002" autocomplete="off" required>
+      <span class="hint">Transfer only to one of the other fictional accounts. You cannot pay yourself.</span>
+    </label>
+    {% endif %}
+    <label>Amount (CNY)
+      <input id="amount" name="amount" value="{{ form.amount }}" inputmode="decimal" placeholder="100.50" autocomplete="off" required>
+    </label>
+    <label>Note
+      <input id="note" name="note" value="{{ form.note }}" maxlength="100" placeholder="Optional, up to 100 characters">
+    </label>
+    <button class="primary" type="submit">{{ verbs[kind] }}</button>
+  </form>
+  <aside class="panel aside">
+    <picture>
+      <source type="image/webp" srcset="{{ url_for('static', filename=pictures[kind][1]) }}">
+      <img src="{{ url_for('static', filename=pictures[kind][0]) }}" alt="{{ pictures[kind][2] }}" width="960" height="720">
+    </picture>
+    <h2>How an entry is kept</h2>
+    <p class="hint">The amount is converted to whole fen before anything is written. A failed check leaves the balance untouched. The picture is not part of the books.</p>
+  </aside>
+</div>
+{% endblock %}

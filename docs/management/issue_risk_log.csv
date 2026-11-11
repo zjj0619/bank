@@ -1,0 +1,8 @@
+ID,Type,What happened,Effect,Handling,Status,Date
+F-01,Defect,Immediate-transaction helper was not imported,Seeding failed,Import added and tests re-run,Fixed,2026-11-10
+F-02,Defect,Very long digit amounts used the wrong error code,Overflow cases were unstable,Return amount_overflow,Fixed,2026-11-10
+F-03,Design,First UI was plain and Chinese,Did not meet the English design brief,Rebuilt as Linden Ledger without changing ids or opening amounts,Fixed,2026-11-10
+R-01,Risk,SQLite has a single writer,Not production throughput,Documented,Accepted,2026-11-10
+R-02,Risk,Browser cases need Chrome or Chromium,They skip when it is missing,Env override and auto-discovery,Accepted,2026-11-10
+R-03,Risk,Passphrase could leak if committed,Someone could sign in locally,Gitignore and no printing,Accepted,2026-11-10
+R-04,Limit,Security cases are not a full audit,Do not generalize to a real bank,Stated in the report,Accepted,2026-11-10

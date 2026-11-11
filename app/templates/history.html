@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Activity · Linden Ledger{% endblock %}
+{% block heading %}Activity{% endblock %}
+{% block main %}
+<div class="gallery">
+  <figure class="page-photo">
+    <picture>
+      <source type="image/webp" srcset="{{ url_for('static', filename='images/activity-stairs-1400.webp') }}">
+      <img src="{{ url_for('static', filename='images/activity-stairs-1400.jpg') }}" alt="Close view of pale stone stairs with a line of warm light. Original artwork. The rows below are the ledger." width="1400" height="788">
+    </picture>
+  </figure>
+  <figure class="page-photo">
+    <picture>
+      <source type="image/webp" srcset="{{ url_for('static', filename='images/atrium-tall-800.webp') }}">
+      <img src="{{ url_for('static', filename='images/atrium-tall-800.jpg') }}" alt="A pale stone atrium with one gold reflection on a glass rail. Original artwork, not an account record." width="800" height="1067">
+    </picture>
+  </figure>
+</div>
+<section class="panel">
+  <h2>Ledger entries</h2>
+  <p class="hint">Simulated account <span class="mono">{{ account_no }}</span>. Each row is one posting. The balance should equal these entries taken together.</p>
+  {% if history %}
+  <div class="table-wrap">
+    <table id="history">
+      <thead>
+        <tr>
+          <th>Time (UTC)</th><th>Entry</th><th>Type</th><th>Direction</th><th>Amount</th><th>Balance after</th><th>Counterparty</th><th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in history %}
+        <tr>
+          <td>{{ row.created_at }}</td>
+          <td class="mono">{{ row.transaction_id }}</td>
+          <td>{{ row.kind_label }}</td>
+          <td class="{{ 'in' if row.direction == 'credit' else 'out' }}">{{ row.direction_label }}</td>
+          <td>{{ row.amount_display }}</td>
+          <td>{{ row.balance_after_display }}</td>
+          <td>{% if row.counterparty_account_no %}{{ row.counterparty_name }} ({{ row.counterparty_account_no }}){% else %}—{% endif %}</td>
+          <td>{{ row.note or "—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">No entries have been posted to this account.</p>
+  {% endif %}
+</section>
+{% endblock %}

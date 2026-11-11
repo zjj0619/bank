@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Linden Ledger{% endblock %}
+{% block body %}
+<div class="gate">
+  <section class="gate-visual" aria-label="Decorative photograph">
+    <picture>
+      <source type="image/webp" srcset="{{ url_for('static', filename='images/login-arch-640.webp') }} 640w, {{ url_for('static', filename='images/login-arch-864.webp') }} 864w" sizes="(max-width: 860px) 100vw, 52vw">
+      <img src="{{ url_for('static', filename='images/login-arch-864.jpg') }}" srcset="{{ url_for('static', filename='images/login-arch-640.jpg') }} 640w, {{ url_for('static', filename='images/login-arch-864.jpg') }} 864w" sizes="(max-width: 860px) 100vw, 52vw" alt="Original artwork of an ivory travertine arch and curved stair. Decoration only, not a real branch and not an account record." width="864" height="1152">
+    </picture>
+    <div class="gate-caption">
+      <p class="wordmark">Linden Ledger</p>
+      <p>A coursework ledger for simulated accounts. The arch was made for this house. It is not a real place.</p>
+    </div>
+  </section>
+  <section class="gate-panel" id="main">
+    <form id="login-form" class="gate-card stack" method="post" action="{{ url_for('web.login_submit') }}" data-once>
+      <p class="sim-note">Simulated ledger · Not a bank · No real funds</p>
+      <h1>Sign in</h1>
+      <p class="hint">Use a fictional username from the list. Each account has its own passphrase, kept on this machine and not shown here.</p>
+      {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label>Username
+        <input id="username" name="username" value="{{ username }}" autocomplete="username" maxlength="64" required>
+      </label>
+      <label>Passphrase
+        <input id="password" name="password" type="password" autocomplete="current-password" maxlength="128" required>
+      </label>
+      <button id="login-submit" class="primary" type="submit">Sign in</button>
+    </form>
+    <aside class="directory-card">
+      <h2>Fictional accounts</h2>
+      <p class="hint">These are simulated house accounts. The identifiers are not card numbers, and nothing here pays a real merchant.</p>
+      <ul class="directory">
+        {% for item in demo_accounts %}
+        <li>
+          <strong>{{ item.display_name }}</strong>
+          <div>Username <span class="mono">{{ item.username }}</span></div>
+          <div>Simulated account <span class="mono">{{ item.account_no }}</span></div>
+          <div>Opening balance {{ item.opening_fen|yuan }} CNY</div>
+        </li>
+        {% endfor %}
+      </ul>
+    </aside>
+    <div class="login-art" aria-hidden="true">
+      <img src="{{ url_for('static', filename='images/atrium-tall-800.jpg') }}" alt="" width="800" height="1067">
+      <img src="{{ url_for('static', filename='images/chip-plate-480.jpg') }}" alt="" width="480" height="480">
+    </div>
+    <p class="credit">Original artwork for this simulation. Not a branch, not a card, and not part of the books.</p>
+  </section>
+</div>
+{% endblock %}

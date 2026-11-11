@@ -1,0 +1,39 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+/coverage.xml
+
+# 本地密钥与演示口令。绝不提交。
+.demo_credentials
+.session_secret
+.env
+*.pem
+*.key
+
+# 运行时数据库。重置命令会删除它们。
+data/*.sqlite3
+data/*.sqlite3-wal
+data/*.sqlite3-shm
+data/*.db
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+
+# 编辑器与系统文件
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# 打包产物
+dist/
+build/
+*.egg-info/
+/opt/cursor/artifacts/

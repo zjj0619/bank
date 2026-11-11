@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="stillTitle">
+  <title id="stillTitle">Drawn still life of a window, column, and open ledger</title>
+  <rect width="640" height="420" fill="#f7f3ea"/>
+  <rect x="36" y="36" width="250" height="348" fill="#2a2a2a"/>
+  <rect x="56" y="56" width="210" height="250" fill="#fff3c4"/>
+  <path d="M56 306h210" stroke="#2a2a2a" stroke-width="8"/>
+  <rect x="148" y="56" width="10" height="250" fill="#f7f3ea"/>
+  <rect x="56" y="168" width="210" height="10" fill="#f7f3ea"/>
+  <rect x="330" y="78" width="46" height="270" fill="#e0b000"/>
+  <rect x="318" y="70" width="70" height="16" fill="#2a2a2a"/>
+  <rect x="318" y="340" width="70" height="18" fill="#2a2a2a"/>
+  <path d="M430 168h150v150H430z" fill="#fffdf8" stroke="#2a2a2a" stroke-width="6"/>
+  <path d="M505 168v150" stroke="#2a2a2a" stroke-width="4"/>
+  <path d="M446 206h44M446 230h44M446 254h28M520 206h44M520 230h44M520 254h36" stroke="#8a5a00" stroke-width="4"/>
+  <rect x="430" y="150" width="150" height="18" fill="#2a2a2a"/>
+</svg>

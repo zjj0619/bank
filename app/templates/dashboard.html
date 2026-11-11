@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Overview · Linden Ledger{% endblock %}
+{% block heading %}Overview{% endblock %}
+{% block main %}
+<section class="overview">
+  <article class="paycard" aria-label="Simulated account card for {{ account.display_name }}">
+    <img class="paycard-bg" src="{{ url_for('static', filename='images/card-face-1400.jpg') }}" alt="" width="1400" height="788">
+    <div class="paycard-body">
+      <div class="paycard-top">
+        <img class="chip" src="{{ url_for('static', filename='images/chip-plate-480.jpg') }}" alt="Brushed gold plate. Original artwork, not a payment mark." width="480" height="480">
+        <p class="paycard-brand">Linden Ledger</p>
+        <p class="paycard-kicker">Simulated account</p>
+      </div>
+      <div>
+        <p class="eyebrow">Available balance</p>
+        <p id="balance" class="figure" data-balance-fen="{{ account.balance_fen }}">{{ account.balance_display }}<span>CNY</span></p>
+        <p class="paycard-name">{{ account.display_name }}</p>
+        <p class="meta"><span class="mono">{{ account.account_no }}</span> · {{ "{:,}".format(account.balance_fen) }} fen · simulated</p>
+      </div>
+    </div>
+  </article>
+  <figure class="account-art">
+    <picture>
+      <source type="image/webp" srcset="{{ url_for('static', filename='images/dashboard-sculpture-768.webp') }} 768w, {{ url_for('static', filename='images/dashboard-sculpture-1152.webp') }} 1152w" sizes="(max-width: 860px) 100vw, 420px">
+      <img src="{{ url_for('static', filename='images/dashboard-sculpture-1152.jpg') }}" srcset="{{ url_for('static', filename='images/dashboard-sculpture-768.jpg') }} 768w, {{ url_for('static', filename='images/dashboard-sculpture-1152.jpg') }} 1152w" sizes="(max-width: 860px) 100vw, 420px" alt="Sunflower-yellow, champagne-gold, and frosted-white ribbon sculpture on a warm white ground. Original artwork for this simulation, not a balance or a transaction." width="1152" height="864">
+    </picture>
+  </figure>
+</section>
+<div class="actions">
+  <a class="button" href="{{ url_for('web.deposit_page') }}">Deposit</a>
+  <a class="button button-ghost" href="{{ url_for('web.withdraw_page') }}">Withdraw</a>
+  <a class="button button-ghost" href="{{ url_for('web.transfer_page') }}">Transfer</a>
+</div>
+{% if spark and spark.count > 1 %}
+<section class="panel" aria-labelledby="spark-title">
+  <h2 id="spark-title">Posted balance</h2>
+  <p class="chart-note">Balance after each of the latest {{ spark.count }} posted entries on this account. Read from the ledger. Not a forecast and not a market chart.</p>
+  <svg class="chart" viewBox="0 0 {{ spark.width }} {{ spark.height }}" role="img" aria-label="Line of posted balances from {{ spark.low }} to {{ spark.high }} CNY">
+    <polyline points="{{ spark.points }}"></polyline>
+  </svg>
+  <div class="chart-scale"><span>Low {{ spark.low }} CNY</span><span>High {{ spark.high }} CNY</span></div>
+</section>
+{% endif %}
+<section class="panel">
+  <h2>Recent entries</h2>
+  {% if history %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Time (UTC)</th><th>Type</th><th>Amount</th><th>Balance</th><th>Counterparty</th></tr>
+      </thead>
+      <tbody>
+        {% for row in history %}
+        <tr>
+          <td>{{ row.created_at }}</td>
+          <td><span class="tag">{{ row.kind_label }}</span></td>
+          <td class="{{ 'in' if row.direction == 'credit' else 'out' }}">{{ row.direction_label }} {{ row.amount_display }}</td>
+          <td>{{ row.balance_after_display }}</td>
+          <td>{% if row.counterparty_account_no %}{{ row.counterparty_name }} ({{ row.counterparty_account_no }}){% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">No entries have been posted to this account.</p>
+  {% endif %}
+  <p><a href="{{ url_for('web.history_page') }}">View all activity</a></p>
+</section>
+{% endblock %}

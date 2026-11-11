@@ -1,0 +1,39 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /workspace
+configfile: pytest.ini
+testpaths: tests
+plugins: cov-7.1.0
+collected 59 items
+
+tests/test_acceptance.py ...                                             [  5%]
+tests/test_browser.py ..                                                 [  8%]
+tests/test_english_ui.py ..                                              [ 11%]
+tests/test_ledger.py .............................                       [ 61%]
+tests/test_passwords.py ......                                           [ 71%]
+tests/test_security.py .................                                 [100%]
+
+--------------- generated xml file: /workspace/reports/junit.xml ---------------
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.3-final-0 ________________
+
+Name                     Stmts   Miss  Cover   Missing
+------------------------------------------------------
+app/__init__.py             80     10    88%   79-83, 104, 113, 116, 121, 123
+app/db.py                   60      8    87%   127-128, 137, 139, 141-142, 158-159
+app/errors.py                8      0   100%
+app/maintenance.py          17      0   100%
+app/money.py                53      3    94%   31, 58, 79
+app/passwords.py           102     17    83%   64, 91-108, 125-126, 162-164
+app/paths.py                15      1    93%   20
+app/routes/__init__.py       0      0   100%
+app/routes/api.py          108      2    98%   170, 180
+app/routes/web.py          166     12    93%   33, 81, 96, 112-113, 115, 124-125, 182, 255, 260-261
+app/secrets.py              84     34    60%   18-26, 30-34, 43-51, 64, 73, 84, 96-104, 107
+app/seed_data.py             2      0   100%
+app/services.py            247     32    87%   40, 42, 45, 51, 60, 70-71, 74-75, 97, 111-112, 127-128, 139, 187, 238, 347, 349, 380, 392, 420-434, 488, 516, 526
+app/webutil.py              52      3    94%   41-42, 65
+------------------------------------------------------
+TOTAL                      994    122    88%
+Coverage XML written to file reports/coverage.xml
+============================= 59 passed in 11.23s ==============================

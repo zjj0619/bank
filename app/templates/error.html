@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Linden Ledger{% endblock %}
+{% block heading %}{{ title }}{% endblock %}
+{% block main %}
+<section class="panel">
+  <img src="{{ url_for('static', filename='images/mark.svg') }}" alt="" width="56" height="56">
+  <h2>{{ title }}</h2>
+  <p>{{ message }}</p>
+  <p><a class="button" href="{{ url_for('web.home') }}">Back to the ledger</a></p>
+</section>
+{% endblock %}

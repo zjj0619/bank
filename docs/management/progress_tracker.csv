@@ -1,0 +1,7 @@
+Stream,Weight,Task,Status,Evidence,Note
+System,30%,Sign-in balance movements and integer fen,Done,app/,Editable
+System,30%,English pages and local images,Done,app/templates/,Editable
+Integration,40%,Case catalog,Done,tests/case_catalog.py,Authored count is in the report
+Integration,40%,Executed results,See the report,docs/integration_report.md,Do not copy pass counts into this sheet
+Management,30%,README architecture schema and API,Done,README.md;docs/,Editable
+Management,30%,Plan standup template and risks,Done,docs/management/,No invented meeting
